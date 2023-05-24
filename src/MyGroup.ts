@@ -20,6 +20,7 @@ class ExtendedGroup extends FabricGroup {
   }
 
   _onObjectAdded(obj: FabricObject): void {
+    console.log(obj.constructor.name, obj.left, obj.top, this.canvas)
     const x = this.x || 0;
     const y = this.y || 0;
     obj.set({
