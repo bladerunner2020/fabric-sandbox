@@ -17,6 +17,6 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
-    "fabric": "^6.0.0-beta6"
+    "fabric": "^6.0.0-beta7"
   }
 }
