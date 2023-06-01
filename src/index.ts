@@ -1,4 +1,5 @@
-import { Canvas, Group, Point, Line, Circle } from "fabric";
+import { Canvas, Point, Line, Circle, Shadow } from "fabric";
+import Group from "./MyGroup";
 import "./styles.css";
 
 // We have a React Wrapper library (see a separate pdf file)
@@ -23,35 +24,18 @@ canvas.add(
 const group1 = new Group([], {
   left: 100,
   top: 100,
-  // originX: "center",
   layout: "fixed",
-  // for testing
-  // subTargetCheck: true,
-  // interactive: true,
 }); // group is created in useFarbicObject hook
 
-// ExtendedCanvas._onObjectAdded (we redefine this method to update coordinates)
 canvas.add(group1); // add created object (that is - group1) to canvas
-// group1.setXY(new Point(100, 100)); // update coordinates
-// group1.setCoords();
-// group1.triggerLayout();
-// canvas.requestRenderAll();
 
 // <Group defaultOptions={{ originX: 'center' }} >
 const group2 = new Group([], {
   originX: "center",
-  // for testing
-  // subTargetCheck: true,
-  // interactive: true,
+  layout: "fixed",
 }); // group is created in useFarbicObject hook
 
-// ExtendedGroup._onObjectAdded (and redefine method of Group as well)
-// group1.triggerLayout();
 group1.add(group2); // add created object (that is - group2) to group
-// group2.setXY(new Point(100, 100));
-// group2.setCoords();
-// group2.triggerLayout();
-canvas.requestRenderAll();
 
 // <Circle
 //   defaultOptions={{
@@ -68,19 +52,12 @@ const circle1 = new Circle({
   // circle is created in useFarbicObject hook
   radius: 50,
   fill: "white",
-  shadow: "0 2 4 #d9d9d9",
+  shadow: new Shadow("0 2 4 #d9d9d9"),
   originX: "center",
   originY: "center",
-  left: 100,
-  top: 100,
 });
 
-// ExtendedGroup._onObjectAdded
 group2.add(circle1);
-// circle1.setXY(new Point(100, 100)); // we set absolute coordinates
-// circle1.setCoords();
-// group2.triggerLayout();
-canvas.requestRenderAll();
 
 // <Circle
 //   defaultOptions={{
@@ -101,20 +78,14 @@ const circle2 = new Circle({
   fill: "transparent",
   stroke: "#E37566",
   strokeWidth: 6,
-  shadow: "0 2 4 #d9d9d9",
+  shadow: new Shadow("0 2 4 #d9d9d9"),
   originX: "center",
   originY: "center",
-  left: 100,
-  top: 100,
 });
 
-// ExtendedGroup._onObjectAdded
 group2.add(circle2);
-// circle2.setXY(new Point(100, 100)); // we set absolute coordinates
-// circle2.setCoords();
-group1.triggerLayout();
-group1.setCoords();
-canvas.requestRenderAll();
+
+group2.triggerLayout(/*{ layout: "fit-content" }*/);
 
 // canvas.setActiveObject(group1);
-window.canvas = canvas;
+// window.canvas = canvas;
