@@ -20,7 +20,15 @@ canvas.add(
 );
 
 // <Group defaultOptions={{ x: 100, y: 100 }}>
-const group1 = new Group([], { left: 100, top: 100, layout: "fixed" }); // group is created in useFarbicObject hook
+const group1 = new Group([], {
+  left: 100,
+  top: 100,
+  // originX: "center",
+  layout: "fixed",
+  // for testing
+  // subTargetCheck: true,
+  // interactive: true,
+}); // group is created in useFarbicObject hook
 
 // ExtendedCanvas._onObjectAdded (we redefine this method to update coordinates)
 canvas.add(group1); // add created object (that is - group1) to canvas
@@ -30,7 +38,12 @@ canvas.add(group1); // add created object (that is - group1) to canvas
 // canvas.requestRenderAll();
 
 // <Group defaultOptions={{ originX: 'center' }} >
-const group2 = new Group([], { originX: "center" }); // group is created in useFarbicObject hook
+const group2 = new Group([], {
+  originX: "center",
+  // for testing
+  // subTargetCheck: true,
+  // interactive: true,
+}); // group is created in useFarbicObject hook
 
 // ExtendedGroup._onObjectAdded (and redefine method of Group as well)
 // group1.triggerLayout();
@@ -91,11 +104,17 @@ const circle2 = new Circle({
   shadow: "0 2 4 #d9d9d9",
   originX: "center",
   originY: "center",
+  left: 100,
+  top: 100,
 });
 
 // ExtendedGroup._onObjectAdded
 group2.add(circle2);
-circle2.setXY(new Point(100, 100)); // we set absolute coordinates
-circle2.setCoords();
-group2.triggerLayout();
+// circle2.setXY(new Point(100, 100)); // we set absolute coordinates
+// circle2.setCoords();
+group1.triggerLayout();
+group1.setCoords();
 canvas.requestRenderAll();
+
+// canvas.setActiveObject(group1);
+window.canvas = canvas;
