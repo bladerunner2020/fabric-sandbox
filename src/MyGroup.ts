@@ -20,7 +20,7 @@ class ExtendedGroup extends FabricGroup {
     super(
       objects,
       // Сохраняем начальные позиции группы
-      { ...rest, left: x ?? left, top: y ?? top, layout: "fixed-size" },
+      { ...rest, left: x ?? left, top: y ?? top, layout: "fit-size" },
       objectsRelativeToGroup
     );
   }
@@ -41,7 +41,7 @@ class ExtendedGroup extends FabricGroup {
   }
 
   onLayout() {
-    this.layout === "fixed-size" && this.setCoords();
+    this.layout === "fit-size" && this.setCoords();
     this.canvas?.requestRenderAll();
   }
 
@@ -57,7 +57,7 @@ class ExtendedGroup extends FabricGroup {
     objects: FabricObject[],
     context: LayoutContext
   ) {
-    if (layoutDirective === "fixed-size" && context.type !== "initialization") {
+    if (layoutDirective === "fit-size" && context.type !== "initialization") {
       const { width, height } = this.prepareBoundingBox(
         layoutDirective,
         objects,
@@ -74,7 +74,7 @@ class ExtendedGroup extends FabricGroup {
       }
     }
     return super.getLayoutStrategyResult(
-      layoutDirective === "fixed-size" ? "fixed" : layoutDirective,
+      layoutDirective === "fit-size" ? "fixed" : layoutDirective,
       objects,
       context
     );
