@@ -24,15 +24,14 @@ canvas.add(
 const group1 = new Group([], {
   left: 100,
   top: 100,
-  layout: "fixed",
 }); // group is created in useFarbicObject hook
 
 canvas.add(group1); // add created object (that is - group1) to canvas
 
-// <Group defaultOptions={{ originX: 'center' }} >
+// <Group defaultOptions={{ }} >
 const group2 = new Group([], {
   originX: "center",
-  layout: "fixed",
+  originY: "center",
 }); // group is created in useFarbicObject hook
 
 group1.add(group2); // add created object (that is - group2) to group
@@ -84,8 +83,6 @@ const circle2 = new Circle({
 });
 
 group2.add(circle2);
-
-group2.triggerLayout(/*{ layout: "fit-content" }*/);
 
 // canvas.setActiveObject(group1);
 // window.canvas = canvas;

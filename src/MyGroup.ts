@@ -1,4 +1,4 @@
-import { Group as FabricGroup, Object as FabricObject } from "fabric";
+import { Group as FabricGroup, Object as FabricObject, Point } from "fabric";
 
 type FabricGroupParams = ConstructorParameters<typeof FabricGroup>;
 type GroupParams = FabricGroupParams[1];
@@ -20,7 +20,7 @@ class ExtendedGroup extends FabricGroup {
     super(
       objects,
       // Сохраняем начальные позиции группы
-      { ...rest, left: x ?? left, top: y ?? top },
+      { ...rest, left: x ?? left, top: y ?? top, layout: "fixed-size" },
       objectsRelativeToGroup
     );
   }
@@ -34,29 +34,50 @@ class ExtendedGroup extends FabricGroup {
     //   top: y + obj.top
     // });
     // obj.setCoords();
-
+    obj.left = obj.left ?? 0;
+    obj.top = obj.top ?? 0;
     // eslint-disable-next-line no-underscore-dangle
     super._onRelativeObjectAdded(obj);
   }
 
   onLayout() {
+    this.layout === "fixed-size" && this.setCoords();
     this.canvas?.requestRenderAll();
   }
 
-  getLayoutStrategyResult1<T extends this["layout"]>(
+  // _adjustObjectPosition(object: FabricObject, diff: Point) {
+  //   object.set({
+  //     left: diff.x,
+  //     top: diff.y,
+  //   });
+  // }
+
+  getLayoutStrategyResult<T extends this["layout"]>(
     layoutDirective: T,
     objects: FabricObject[],
     context: LayoutContext
   ) {
-    console.log(context.type);
-    if (layoutDirective === "fixed" && context.type === "added") {
-      console.log(objects);
-      const { width, height, ...rest } = this.getObjectsBoundingBox(objects);
-
-      console.log(width, height, rest);
-      return { width: 100, height: 100, centerX: 100, centerY: 100 };
+    if (layoutDirective === "fixed-size" && context.type !== "initialization") {
+      const { width, height } = this.prepareBoundingBox(
+        layoutDirective,
+        objects,
+        context
+      );
+      if (width && height) {
+        const { x, y } = this.getRelativeCenterPoint();
+        return {
+          width,
+          height,
+          centerX: x,
+          centerY: y,
+        };
+      }
     }
-    return super.getLayoutStrategyResult(layoutDirective, objects, context);
+    return super.getLayoutStrategyResult(
+      layoutDirective === "fixed-size" ? "fixed" : layoutDirective,
+      objects,
+      context
+    );
   }
 }
 
