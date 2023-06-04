@@ -1,4 +1,4 @@
-import { Group as FabricGroup, Object as FabricObject } from 'fabric';
+import { Group as FabricGroup, Object as FabricObject, Point } from "fabric";
 
 type FabricGroupParams = ConstructorParameters<typeof FabricGroup>;
 type GroupParams = FabricGroupParams[1];
@@ -11,12 +11,18 @@ class ExtendedGroup extends FabricGroup {
   x?: number;
   y?: number;
 
-  constructor(objects?: FabricGroupParams[0], options?: ExtendedGroupParams, objectsRelativeToGroup?: boolean) {
-    const { x, y, ...rest } = options || {};
-    super(objects, rest, objectsRelativeToGroup);
-    // Сохраняем начальные позиции группы
-    this.x = x || options?.left;
-    this.y = y || options?.top;
+  constructor(
+    objects?: FabricGroupParams[0],
+    options?: ExtendedGroupParams,
+    objectsRelativeToGroup?: boolean
+  ) {
+    const { x, y, left, top, ...rest } = options || {};
+    super(
+      objects,
+      // Сохраняем начальные позиции группы
+      { ...rest, left: x ?? left, top: y ?? top, layout: "fit-size" },
+      objectsRelativeToGroup
+    );
   }
 
   _onObjectAdded(obj: FabricObject): void {
@@ -28,9 +34,50 @@ class ExtendedGroup extends FabricGroup {
     //   top: y + obj.top
     // });
     // obj.setCoords();
-
+    obj.left = obj.left ?? 0;
+    obj.top = obj.top ?? 0;
     // eslint-disable-next-line no-underscore-dangle
-    super._onObjectAdded(obj);
+    super._onRelativeObjectAdded(obj);
+  }
+
+  onLayout() {
+    this.layout === "fit-size" && this.setCoords();
+    this.canvas?.requestRenderAll();
+  }
+
+  // _adjustObjectPosition(object: FabricObject, diff: Point) {
+  //   object.set({
+  //     left: diff.x,
+  //     top: diff.y,
+  //   });
+  // }
+
+  getLayoutStrategyResult<T extends this["layout"]>(
+    layoutDirective: T,
+    objects: FabricObject[],
+    context: LayoutContext
+  ) {
+    if (layoutDirective === "fit-size" && context.type !== "initialization") {
+      const { width, height } = this.prepareBoundingBox(
+        layoutDirective,
+        objects,
+        context
+      );
+      if (width && height) {
+        const { x, y } = this.getRelativeCenterPoint();
+        return {
+          width,
+          height,
+          centerX: x,
+          centerY: y,
+        };
+      }
+    }
+    return super.getLayoutStrategyResult(
+      layoutDirective === "fit-size" ? "fixed" : layoutDirective,
+      objects,
+      context
+    );
   }
 }
 
